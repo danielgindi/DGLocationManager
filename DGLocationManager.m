@@ -217,6 +217,8 @@
         dispatch_sync(dispatch_get_main_queue(), ^{
             [self addLocationDelegate:delegate];
         });
+        
+        return;
     }
     
     DGLocationManager *instance = self.instance;
@@ -235,6 +237,8 @@
         dispatch_sync(dispatch_get_main_queue(), ^{
             [self removeLocationDelegate:delegate];
         });
+        
+        return;
     }
     
     DGLocationManager *instance = self.instance;
@@ -254,6 +258,8 @@
         dispatch_sync(dispatch_get_main_queue(), ^{
             [self removeAllLocationDelegates];
         });
+        
+        return;
     }
     
     DGLocationManager *instance = self.instance;
@@ -269,6 +275,8 @@
         dispatch_sync(dispatch_get_main_queue(), ^{
             [self addHeadingDelegate:delegate];
         });
+        
+        return;
     }
     
     DGLocationManager *instance = self.instance;
@@ -287,6 +295,8 @@
         dispatch_sync(dispatch_get_main_queue(), ^{
             [self removeHeadingDelegate:delegate];
         });
+        
+        return;
     }
     
     DGLocationManager *instance = self.instance;
@@ -306,6 +316,8 @@
         dispatch_sync(dispatch_get_main_queue(), ^{
             [self removeAllHeadingDelegates];
         });
+        
+        return;
     }
     
     DGLocationManager *instance = self.instance;
