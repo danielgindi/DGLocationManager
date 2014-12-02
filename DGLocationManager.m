@@ -60,6 +60,7 @@
 {
     CLLocationManager *locationManager;
     
+    NSMutableArray *authorizationDelegates;
     NSMutableArray *locationDelegates;
     NSMutableArray *headingDelegates;
     CLLocation *oldLocation;
@@ -87,6 +88,7 @@
         sharedInstance->locationManager.headingFilter = kCLHeadingFilterNone;
         sharedInstance->locationManager.delegate = sharedInstance;
         sharedInstance->activityType = CLActivityTypeOther;
+        sharedInstance->authorizationDelegates = [[NSMutableArray alloc] init];
         sharedInstance->locationDelegates = [[NSMutableArray alloc] init];
         sharedInstance->headingDelegates = [[NSMutableArray alloc] init];
     });
@@ -154,6 +156,57 @@
     {
         [[self instance]->locationManager requestAlwaysAuthorization];
     }
+}
+
++ (void)addAuthorizationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate
+{
+    if (![NSThread isMainThread])
+    {
+        // NSMutableArray is NOT threadsafe! So only work with the delegates on main queue
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self addAuthorizationDelegate:delegate];
+        });
+        
+        return;
+    }
+    
+    DGLocationManager *instance = self.instance;
+    DGLocationManagerUnretainedWrapper *wrapper = [DGLocationManagerUnretainedWrapper wrapperForReference:delegate];
+    if ([instance->authorizationDelegates containsObject:wrapper]) return;
+    [instance->authorizationDelegates addObject:wrapper];
+}
+
++ (void)removeAuthorizationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate
+{
+    if (![NSThread isMainThread])
+    {
+        // NSMutableArray is NOT threadsafe! So only work with the delegates on main queue
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self removeAuthorizationDelegate:delegate];
+        });
+        
+        return;
+    }
+    
+    DGLocationManager *instance = self.instance;
+    DGLocationManagerUnretainedWrapper *wrapper = [DGLocationManagerUnretainedWrapper wrapperForReference:delegate];
+    [instance->authorizationDelegates removeObject:wrapper];
+}
+
++ (void)removeAllAuthorizationDelegates
+{
+    if (![NSThread isMainThread])
+    {
+        // NSMutableArray is NOT threadsafe! So only work with the delegates on main queue
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self removeAllAuthorizationDelegates];
+        });
+        
+        return;
+    }
+    
+    DGLocationManager *instance = self.instance;
+    [instance->authorizationDelegates removeAllObjects];
 }
 
 + (void)addLocationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate
@@ -357,6 +410,14 @@
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
+    for (DGLocationManagerUnretainedWrapper *delegateWrapper in authorizationDelegates)
+    {
+        id<DGLocationManagerDelegate> delegate = delegateWrapper->reference;
+        if ([delegate respondsToSelector:@selector(locationManagerDidChangeAuthorizationStatus:)])
+        {
+            [delegate locationManagerDidChangeAuthorizationStatus:status];
+        }
+    }
     for (DGLocationManagerUnretainedWrapper *delegateWrapper in locationDelegates)
     {
         id<DGLocationManagerDelegate> delegate = delegateWrapper->reference;

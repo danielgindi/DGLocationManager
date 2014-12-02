@@ -62,6 +62,10 @@
 + (void)requestWhenInUseAuthorization;
 + (void)requestAlwaysAuthorization;
 
++ (void)addAuthorizationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate;
++ (void)removeAuthorizationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate;
++ (void)removeAllAuthorizationDelegates;
+
 + (void)addLocationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate;
 + (void)removeLocationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate;
 + (void)removeAllLocationDelegates;
