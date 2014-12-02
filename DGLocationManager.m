@@ -114,6 +114,14 @@
     [instance->locationManager startUpdatingLocation];
 }
 
++ (void)startUpdatingLocationForDelegates
+{
+    if (self.instance->locationDelegates.count)
+    {
+        [self startUpdatingLocation];
+    }
+}
+
 + (void)stopUpdatingLocation
 {
     [[self instance]->locationManager stopUpdatingLocation];
@@ -135,6 +143,14 @@
         instance->locationManager.activityType = instance->activityType;
     }
     [instance->locationManager startUpdatingHeading];
+}
+
++ (void)startUpdatingHeadingForDelegates
+{
+    if (self.instance->headingDelegates.count)
+    {
+        [self startUpdatingHeading];
+    }
 }
 
 + (void)stopUpdatingHeading

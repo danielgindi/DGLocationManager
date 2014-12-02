@@ -54,9 +54,11 @@
 @interface DGLocationManager : NSObject <CLLocationManagerDelegate>
 
 + (void)startUpdatingLocation;
++ (void)startUpdatingLocationForDelegates;
 + (void)stopUpdatingLocation;
 
 + (void)startUpdatingHeading;
++ (void)startUpdatingHeadingForDelegates;
 + (void)stopUpdatingHeading;
 
 + (void)requestWhenInUseAuthorization;
