@@ -87,6 +87,7 @@
         sharedInstance->locationManager.desiredAccuracy = kCLLocationAccuracyBest;
         sharedInstance->locationManager.headingFilter = kCLHeadingFilterNone;
         sharedInstance->locationManager.delegate = sharedInstance;
+        sharedInstance->newLocation = sharedInstance->locationManager.location;
         sharedInstance->activityType = CLActivityTypeOther;
         sharedInstance->authorizationDelegates = [[NSMutableArray alloc] init];
         sharedInstance->locationDelegates = [[NSMutableArray alloc] init];
@@ -379,6 +380,21 @@
 + (CLAuthorizationStatus)authorizationStatus
 {
     return [CLLocationManager authorizationStatus];
+}
+
++ (BOOL)significantLocationChangeMonitoringAvailable
+{
+    return [CLLocationManager significantLocationChangeMonitoringAvailable];
+}
+
++ (void)startMonitoringSignificantLocationChanges
+{
+    [self.instance->locationManager startMonitoringSignificantLocationChanges];
+}
+
++ (void)stopMonitoringSignificantLocationChanges
+{
+    [self.instance->locationManager stopMonitoringSignificantLocationChanges];
 }
 
 #pragma mark - CLLocationManagerDelegate
