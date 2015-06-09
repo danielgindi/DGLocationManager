@@ -90,4 +90,22 @@
 
 + (CLAuthorizationStatus)authorizationStatus;
 
+/**
+ *  @return YES if the device supports significant location change monitoring, otherwise NO.
+ */
++ (BOOL)significantLocationChangeMonitoringAvailable;
+
+/**
+ *  @brief
+ *      Start monitoring significant location changes.  The behavior of this service is not affected by the desiredAccuracy
+ *      or distanceFilter properties.  Locations will be delivered through the same delegate callback as the standard
+ *      location service.
+ */
++ (void)startMonitoringSignificantLocationChanges;
+
+/**
+ *  @brief Stop monitoring significant location changes.
+ */
++ (void)stopMonitoringSignificantLocationChanges;
+
 @end
