@@ -2,7 +2,6 @@
 //  DGLocationManager.m
 //  DGLocationManager
 //
-//  Created by Daniel Cohen Gindi on 11/23/12.
 //  Copyright (c) 2012 danielgindi@gmail.com. All rights reserved.
 //
 //  https://github.com/danielgindi/DGLocationManager
@@ -39,8 +38,6 @@
 
 #import "DGLocationManager.h"
 #import <UIKit/UIKit.h> // For UIDevice
-
-#define IS_OS_8_OR_LATER (UIDevice.currentDevice.systemVersion.floatValue >= 8.f)
 
 #pragma mark - Wrapper for delegate to keep it unretained
 
@@ -161,18 +158,12 @@
 
 + (void)requestWhenInUseAuthorization
 {
-    if (IS_OS_8_OR_LATER)
-    {
-        [[self instance]->locationManager requestWhenInUseAuthorization];
-    }
+    [[self instance]->locationManager requestWhenInUseAuthorization];
 }
 
 + (void)requestAlwaysAuthorization
 {
-    if (IS_OS_8_OR_LATER)
-    {
-        [[self instance]->locationManager requestAlwaysAuthorization];
-    }
+    [[self instance]->locationManager requestAlwaysAuthorization];
 }
 
 + (void)addAuthorizationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate
