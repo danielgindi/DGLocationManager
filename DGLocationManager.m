@@ -166,7 +166,7 @@
     [[self instance]->locationManager requestAlwaysAuthorization];
 }
 
-+ (void)addAuthorizationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate
++ (void)addAuthorizationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate
 {
     if (![NSThread isMainThread])
     {
@@ -184,7 +184,7 @@
     [instance->authorizationDelegates addObject:wrapper];
 }
 
-+ (void)removeAuthorizationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate
++ (void)removeAuthorizationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate
 {
     if (![NSThread isMainThread])
     {
@@ -217,7 +217,7 @@
     [instance->authorizationDelegates removeAllObjects];
 }
 
-+ (void)addLocationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate
++ (void)addLocationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate
 {
     if (![NSThread isMainThread])
     {
@@ -237,7 +237,7 @@
     [self startUpdatingLocation];
 }
 
-+ (void)removeLocationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate
++ (void)removeLocationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate
 {
     if (![NSThread isMainThread])
     {
@@ -275,7 +275,7 @@
     [self stopUpdatingLocation];
 }
 
-+ (void)addHeadingDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate
++ (void)addHeadingDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate
 {
     if (![NSThread isMainThread])
     {
@@ -295,7 +295,7 @@
     [self startUpdatingHeading];
 }
 
-+ (void)removeHeadingDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate
++ (void)removeHeadingDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate
 {
     if (![NSThread isMainThread])
     {
@@ -343,12 +343,12 @@
     self.instance->activityType = activityType;
 }
 
-+ (CLLocation *)location
++ (CLLocation * _Nullable)location
 {
     return self.instance->newLocation;
 }
 
-+ (CLLocation *)previousLocation
++ (CLLocation * _Nullable)previousLocation
 {
     return self.instance->oldLocation;
 }

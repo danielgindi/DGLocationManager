@@ -44,9 +44,9 @@
 @protocol DGLocationManagerDelegate <NSObject>
 
 @optional
-- (void)locationManagerDidUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation;
-- (void)locationManagerDidFailWithError:(NSError *)error;
-- (void)locationManagerDidUpdateHeading:(CLHeading *)newHeading;
+- (void)locationManagerDidUpdateToLocation:(CLLocation * _Nonnull)newLocation fromLocation:(CLLocation * _Nullable)oldLocation;
+- (void)locationManagerDidFailWithError:(NSError * _Nonnull)error;
+- (void)locationManagerDidUpdateHeading:(CLHeading * _Nonnull)newHeading;
 - (void)locationManagerDidChangeAuthorizationStatus:(CLAuthorizationStatus)status;
 
 @end
@@ -64,16 +64,16 @@
 + (void)requestWhenInUseAuthorization;
 + (void)requestAlwaysAuthorization;
 
-+ (void)addAuthorizationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate;
-+ (void)removeAuthorizationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate;
++ (void)addAuthorizationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate;
++ (void)removeAuthorizationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate;
 + (void)removeAllAuthorizationDelegates;
 
-+ (void)addLocationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate;
-+ (void)removeLocationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate;
++ (void)addLocationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate;
++ (void)removeLocationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate;
 + (void)removeAllLocationDelegates;
 
-+ (void)addHeadingDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate;
-+ (void)removeHeadingDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate;
++ (void)addHeadingDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate;
++ (void)removeHeadingDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate;
 + (void)removeAllHeadingDelegates;
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
@@ -81,8 +81,8 @@
 #endif
 + (void)setLocationActivityType:(CLActivityType)activityType;
 
-+ (CLLocation *)location;
-+ (CLLocation *)previousLocation;
++ (CLLocation * _Nullable) location;
++ (CLLocation * _Nullable) previousLocation;
 
 + (double)magneticHeading;
 + (double)trueHeading;
