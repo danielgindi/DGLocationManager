@@ -59,6 +59,8 @@
     
     NSMutableArray *authorizationDelegates;
     NSMutableArray *locationDelegates;
+    NSMutableArray *locationPassiveDelegates;
+    NSArray *locationAllDelegates;
     NSMutableArray *headingDelegates;
     CLLocation *oldLocation;
     CLLocation *newLocation;
@@ -88,6 +90,8 @@
         sharedInstance->activityType = CLActivityTypeOther;
         sharedInstance->authorizationDelegates = [[NSMutableArray alloc] init];
         sharedInstance->locationDelegates = [[NSMutableArray alloc] init];
+        sharedInstance->locationPassiveDelegates = [[NSMutableArray alloc] init];
+        sharedInstance->locationAllDelegates = @[];
         sharedInstance->headingDelegates = [[NSMutableArray alloc] init];
     });
     return sharedInstance;
@@ -221,6 +225,8 @@
     if ([instance->locationDelegates containsObject:wrapper]) return;
     [instance->locationDelegates addObject:wrapper];
     
+    instance->locationAllDelegates = [instance->locationDelegates arrayByAddingObjectsFromArray:instance->locationPassiveDelegates];
+        
     [self startUpdatingLocation];
 }
 
@@ -239,6 +245,9 @@
     DGLocationManager *instance = self.instance;
     DGLocationManagerUnretainedWrapper *wrapper = [DGLocationManagerUnretainedWrapper wrapperForReference:delegate];
     [instance->locationDelegates removeObject:wrapper];
+    
+    instance->locationAllDelegates = [instance->locationDelegates arrayByAddingObjectsFromArray:instance->locationPassiveDelegates];
+    
     if (instance->locationDelegates.count == 0)
     {
         [self stopUpdatingLocation];
@@ -259,7 +268,67 @@
     
     DGLocationManager *instance = self.instance;
     [instance->locationDelegates removeAllObjects];
+    
+    instance->locationAllDelegates = [instance->locationDelegates arrayByAddingObjectsFromArray:instance->locationPassiveDelegates];
+    
     [self stopUpdatingLocation];
+}
+
++ (void)addLocationPassiveDelegate:(__unsafe_unretained id<DGLocationManagerDelegate>)delegate
+{
+    if (![NSThread isMainThread])
+    {
+        // NSMutableArray is NOT threadsafe! So only work with the delegates on main queue
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self addLocationDelegate:delegate];
+        });
+        
+        return;
+    }
+    
+    DGLocationManager *instance = self.instance;
+    DGLocationManagerUnretainedWrapper *wrapper = [DGLocationManagerUnretainedWrapper wrapperForReference:delegate];
+    if ([instance->locationPassiveDelegates containsObject:wrapper]) return;
+    [instance->locationPassiveDelegates addObject:wrapper];
+    
+    instance->locationAllDelegates = [instance->locationDelegates arrayByAddingObjectsFromArray:instance->locationPassiveDelegates];
+}
+
++ (void)removeLocationPassiveDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate
+{
+    if (![NSThread isMainThread])
+    {
+        // NSMutableArray is NOT threadsafe! So only work with the delegates on main queue
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self removeLocationDelegate:delegate];
+        });
+        
+        return;
+    }
+    
+    DGLocationManager *instance = self.instance;
+    DGLocationManagerUnretainedWrapper *wrapper = [DGLocationManagerUnretainedWrapper wrapperForReference:delegate];
+    [instance->locationPassiveDelegates removeObject:wrapper];
+    
+    instance->locationAllDelegates = [instance->locationDelegates arrayByAddingObjectsFromArray:instance->locationPassiveDelegates];
+}
+
++ (void)removeAllLocationPassiveDelegates
+{
+    if (![NSThread isMainThread])
+    {
+        // NSMutableArray is NOT threadsafe! So only work with the delegates on main queue
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self removeAllLocationPassiveDelegates];
+        });
+        
+        return;
+    }
+    
+    DGLocationManager *instance = self.instance;
+    [instance->locationPassiveDelegates removeAllObjects];
+    
+    instance->locationAllDelegates = [instance->locationDelegates arrayByAddingObjectsFromArray:instance->locationPassiveDelegates];
 }
 
 + (void)addHeadingDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate
@@ -384,7 +453,7 @@
     newLocation = theNewLocation;
     oldLocation = theOldLocation;
     
-    for (DGLocationManagerUnretainedWrapper *delegateWrapper in locationDelegates)
+    for (DGLocationManagerUnretainedWrapper *delegateWrapper in locationAllDelegates)
     {
         id<DGLocationManagerDelegate> delegate = delegateWrapper->reference;
         if ([delegate respondsToSelector:@selector(locationManagerDidUpdateToLocation:fromLocation:)])
@@ -412,7 +481,7 @@
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {
-    for (DGLocationManagerUnretainedWrapper *delegateWrapper in locationDelegates)
+    for (DGLocationManagerUnretainedWrapper *delegateWrapper in locationAllDelegates)
     {
         id<DGLocationManagerDelegate> delegate = delegateWrapper->reference;
         if ([delegate respondsToSelector:@selector(locationManagerDidFailWithError:)])
@@ -420,6 +489,7 @@
             [delegate locationManagerDidFailWithError:error];
         }
     }
+    
     for (DGLocationManagerUnretainedWrapper *delegateWrapper in headingDelegates)
     {
         id<DGLocationManagerDelegate> delegate = delegateWrapper->reference;
@@ -440,7 +510,8 @@
             [delegate locationManagerDidChangeAuthorizationStatus:status];
         }
     }
-    for (DGLocationManagerUnretainedWrapper *delegateWrapper in locationDelegates)
+    
+    for (DGLocationManagerUnretainedWrapper *delegateWrapper in locationAllDelegates)
     {
         id<DGLocationManagerDelegate> delegate = delegateWrapper->reference;
         if ([delegate respondsToSelector:@selector(locationManagerDidChangeAuthorizationStatus:)])
@@ -448,6 +519,7 @@
             [delegate locationManagerDidChangeAuthorizationStatus:status];
         }
     }
+    
     for (DGLocationManagerUnretainedWrapper *delegateWrapper in headingDelegates)
     {
         id<DGLocationManagerDelegate> delegate = delegateWrapper->reference;

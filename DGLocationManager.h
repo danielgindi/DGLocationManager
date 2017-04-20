@@ -72,6 +72,10 @@
 + (void)removeLocationDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate;
 + (void)removeAllLocationDelegates;
 
++ (void)addLocationPassiveDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate;
++ (void)removeLocationPassiveDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate;
++ (void)removeAllLocationPassiveDelegates;
+
 + (void)addHeadingDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate;
 + (void)removeHeadingDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate;
 + (void)removeAllHeadingDelegates;
