@@ -76,9 +76,6 @@
 + (void)removeHeadingDelegate:(__unsafe_unretained id<DGLocationManagerDelegate> _Nonnull)delegate;
 + (void)removeAllHeadingDelegates;
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
-+ (void)setLocationPurpose:(NSString *)purpose;
-#endif
 + (void)setLocationActivityType:(CLActivityType)activityType;
 
 + (CLLocation * _Nullable) location;

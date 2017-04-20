@@ -97,13 +97,6 @@
 {
     DGLocationManager *instance = self.instance;
     
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
-    if ([instance->locationManager respondsToSelector:@selector(setPurpose:)])
-    {
-        instance->locationManager.purpose = instance->purpose;
-    }
-#endif
-    
     if ([instance->locationManager respondsToSelector:@selector(setActivityType:)])
     {
         instance->locationManager.activityType = instance->activityType;
@@ -128,18 +121,12 @@
 + (void)startUpdatingHeading
 {
     DGLocationManager *instance = self.instance;
-	
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
-    if ([instance->locationManager respondsToSelector:@selector(setPurpose:)])
-    {
-        instance->locationManager.purpose = instance->purpose;
-    }
-#endif
 
     if ([instance->locationManager respondsToSelector:@selector(setActivityType:)])
     {
         instance->locationManager.activityType = instance->activityType;
     }
+    
     [instance->locationManager startUpdatingHeading];
 }
 
@@ -233,7 +220,7 @@
     DGLocationManagerUnretainedWrapper *wrapper = [DGLocationManagerUnretainedWrapper wrapperForReference:delegate];
     if ([instance->locationDelegates containsObject:wrapper]) return;
     [instance->locationDelegates addObject:wrapper];
-        
+    
     [self startUpdatingLocation];
 }
 
